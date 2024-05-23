@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>M2QA Annotation</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='dist/css/style.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='dist/css/main.css')}}">
+</head>
+
+<body class="bg-white" onbeforeunload="return 'you sure you want to leave? Any progress will be lost'">
+    <noscript>
+        You need to enable JavaScript to run this app.
+    </noscript>
+    <script src="{{url_for('static',filename='dist/js/bundle.js')}}"></script>
+    <p class="text-gray-800 text-sm absolute top-0 right-0 p-1">
+        Prolific PID: {{prolific_pid}}
+    </p>
+    <div class="border-b-2 border-gray-100 py-6 text-center bg-gray-50 text-gray-800" id="header">
+        <h1 class="text-5xl font-bold m-0">Task Overview</h1>
+    </div>
+
+
+    {% if error_text %}
+    <P class="md:max-w-3xl mx-auto text-red-700 text-4xl font-bold text-center pt-8">
+        {{ error_text }}
+    </P>
+    {% else %}
+    <div class="bg-white pb-10">
+        <div
+            class="md:max-w-3xl mx-auto rounded-t-xl border-t-2 border-r-2 border-l-2 border-slate-100 border-solid mt-8 p-8 break-normal text-gray-800">
+            <button id="tutorialtask" onclick="openTutorialTask()"
+                class="p-3 bg-orange-100 rounded-lg hover:bg-orange-200 text-gray-600 font-semibold border hover:border-transparent rounded-lg w-full">
+                Tutorial Task (English)
+            </button>
+            <P id="tutorial_text" class=""></P>
+        </div>
+
+        <div
+            class="md:max-w-3xl mx-auto rounded-b-xl border-2 border-slate-100 border-solid mb-8 p-8 break-normal text-gray-800">
+
+            {%for i in range(1, number_of_paragraphs+1)%}
+            <button disabled="true" id="task{{i}}" onclick="openAnnotatePage({{i}})"
+                class="bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold p-2 border hover:border-transparent rounded-lg w-full mb-3">
+                Task {{i}} ({{task_language}})
+            </button>
+            {%endfor%}
+
+            <button type="submit" disabled="true" id="task{{number_of_paragraphs+1}}" onclick="finalSubmit()" class="bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold p-2 border hover:border-transparent
+                rounded-lg w-full mt-5">
+                Finish
+            </button>
+
+            <P id="final_text" class=""> </P>
+        </div>
+    </div>
+    {% endif %}
+
+    <script>
+        const urlParameter = new URLSearchParams(window.location.search);
+        const study_id = urlParameter.get("STUDY_ID");
+        const session_id = urlParameter.get("SESSION_ID");
+        const prolific_pid = urlParameter.get("PROLIFIC_PID");
+        const language = urlParameter.get("language");
+        const paragraph_ids = {{ paragraph_ids | tojson }};
+        const already_finished_paragraphs = {{ already_finished_paragraphs | tojson }};
+        const finalSubmitEndpoint = "/finish";
+        var listOfCompletedTask = []
+
+        for (var i = 0; i < already_finished_paragraphs.length; i++) {
+            taskNumber = paragraph_ids.indexOf(already_finished_paragraphs[i]) + 1
+            enableTask("task" + taskNumber);
+            completedTask("task" + taskNumber);
+            enableTask("task" + (taskNumber + 1));
+        }
+
+        function disable_onbeforeunload() {
+            window.onbeforeunload = function () { };
+        }
+
+        function openTutorialTask() {
+            var url = "tutorial/step1.html?PROLIFIC_PID=" + prolific_pid + "&STUDY_ID=" + study_id + "&SESSION_ID=" + session_id + "&language=" + language;
+            disable_onbeforeunload();
+            window.open(url, "_self")
+
+            completedTask("tutorialtask");
+            enableTask("task1");
+        }
+
+        function openAnnotatePage(taskId) {
+            var paragraph_id = paragraph_ids[taskId - 1];
+            var url = "annotate?PROLIFIC_PID=" + prolific_pid + "&paragraph_id=" + paragraph_id + "&STUDY_ID=" + study_id + "&SESSION_ID=" + session_id + "&language=" + language + "&taskNumber=" + taskId;
+            disable_onbeforeunload();
+            window.open(url, "_self")
+
+            completedTask("task" + taskId);
+            enableTask("task" + (taskId + 1));
+        }
+
+        function completedTask(elementId) {
+            listOfCompletedTask.push(elementId)
+            var button = document.getElementById(elementId);
+            button.classList.remove("bg-orange-100");
+            button.classList.remove("border");
+            button.classList.remove("hover:bg-orange-200");
+            button.classList.remove("hover:border-transparent");
+            button.classList.remove("p-3");
+            button.classList.add("p-2");
+            button.classList.add("bg-green-100");
+        }
+
+        function enableTask(elementId) {
+            if (!listOfCompletedTask.includes(elementId)) {
+                var button = document.getElementById(elementId);
+                button.disabled = false;
+                button.classList.remove("bg-gray-100");
+                button.classList.remove("hover:bg-gray-200");
+                button.classList.remove("p-2");
+                button.classList.add("p-3");
+                button.classList.add("bg-orange-100");
+                button.classList.add("hover:bg-orange-200");
+            }
+        }
+
+        function finalSubmit() {
+            let submitData = {
+                "prolific_pid": prolific_pid,
+                "study_id": study_id,
+            }
+
+            // Send PUT request to server
+            fetch(finalSubmitEndpoint, {
+                "method": "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                "body": JSON.stringify(submitData),
+            }).then(response => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong, please try submitting again.\nInvalid status code: ' + response.status);
+                }
+            }).then(data => {
+                if (data["success"]) {
+                    completedTask("task" + (paragraph_ids.length + 1));
+                    let text = "You may now return to Prolific: The Prolific completion code is: <b style=\"font-size: large;\">" + data["prolific_key"] + "</b><br>If you liked this task you can find similar ones from us on Prolific. You won't need to do the tutorial again.";
+                    let final_text_element = document.getElementById('final_text');
+                    final_text_element.classList.add("pt-8")
+                    final_text_element.innerHTML = text;
+                    disable_onbeforeunload();
+                } else if (data.hasOwnProperty("message")) {
+                    throw new Error(data["message"]);
+                } else {
+                    taskNumber = paragraph_ids.indexOf(data["paragraph"]) + 1
+                    markTaskAsUnsolved("task" + taskNumber)
+                    throw new Error("You didn't complete Task " + taskNumber + ". Please submit your answer to this task. After completing all tasks, you will get the Prolific completion code.");
+                }
+            }).catch(error => window.alert(error));
+        }
+
+        function markTaskAsUnsolved(id) {
+            var button = document.getElementById(id);
+            button.disabled = false;
+            button.classList.remove("p-2");
+            button.classList.remove("bg-green-100");
+            button.classList.remove("hover:bg-gray-200");
+            button.classList.remove("bg-gray-100");
+
+            button.classList.add("bg-orange-100");
+            button.classList.add("border");
+            button.classList.add("hover:bg-orange-200");
+            button.classList.add("hover:border-transparent");
+            button.classList.add("p-3");
+        }
+
+        {% if annotator_has_completed_tutorial %}
+        skip_tutorial()
+        {% endif %}
+
+        function skip_tutorial() {
+            completedTask("tutorialtask");
+            enableTask("task1");
+            let final_text = document.getElementById('tutorial_text');
+            final_text.classList.add("pt-8")
+            final_text.classList.add("px-6")
+            final_text.innerHTML = "You have already completed the tutorial. If you can't remember exactly what we expect from you in the tasks, we recommend that you read it again.";
+        }
+    </script>
+</body>
+
+</html>

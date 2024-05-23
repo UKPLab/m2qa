@@ -1,0 +1,7 @@
+{
+    "api_key": "<YOUR_KEY>",
+    "max_requests_per_minute": 300,
+    "max_tokens_per_minute": 100000,
+    "api_base": "https://<YOUR_SUBDOMAIN>.openai.azure.com/",
+    "api-version": "2023-07-01-preview"
+}

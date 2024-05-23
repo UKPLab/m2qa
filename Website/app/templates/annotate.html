@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Task {{taskNumber}}</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='dist/css/style.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='dist/css/main.css')}}">
+</head>
+
+<body class="bg-white" onpaste="return false" onbeforeunload="return 'you sure you want to leave?'">
+    <script src="{{url_for('static',filename='dist/js/bundle.js')}}"></script>
+
+    <p class="text-gray-800 text-sm absolute top-0 right-0 p-1">
+        Prolific PID: {{prolific_pid}}
+    </p>
+    <div class="border-b-2 border-gray-100 py-6 text-center bg-gray-50 text-gray-800" id="header">
+        <h1 class="text-5xl font-bold">Task {{taskNumber}}</h1>
+    </div>
+
+    {% if error_text %}
+    <P class="md:max-w-3xl mx-auto text-red-700 text-4xl font-bold text-center pt-8">
+        {{ error_text }}
+    </P>
+    <div class="flex flex-col items-center pt-8 pb-12" type="submit" onclick="nextPage()">
+        <button id="nextPageButton"
+            class="rounded-lg border border-orange-400 bg-orange-100 hover:bg-orange-200 text-gray-600 block font-bold py-4 px-6 ml-2 flex items-center">
+            Task Overview
+            <svg class="h-5 w-5 ml-2 fill-current" clasversion="1.1" viewBox="-49 141 512 512"
+                style="enable-background:new -49 141 512 512;">
+                <path id="XMLID_11_" d="M-24,422h401.645l-72.822,72.822c-9.763,9.763-9.763,25.592,0,35.355c9.763,9.764,25.593,9.762,35.355,0
+            l115.5-115.5C460.366,409.989,463,403.63,463,397s-2.634-12.989-7.322-17.678l-115.5-115.5c-9.763-9.762-25.593-9.763-35.355,0
+            c-9.763,9.763-9.763,25.592,0,35.355l72.822,72.822H-24c-13.808,0-25,11.193-25,25S-37.808,422-24,422z" />
+            </svg>
+        </button>
+    </div>
+    {% else %}
+    <div id="label-studio"></div>
+    <p class="p-8" style="background-color: #eeeeee;">
+        Questions should be asked in the language of the text.<br>
+    </p>
+    <div class="flex flex-col items-center pt-8 pb-12" type="submit" onclick="nextPage()">
+        <button disabled="true" id="nextPageButton"
+            class="rounded-lg border border-gray-300 bg-gray-100 text-gray-600 block font-bold py-4 px-6 ml-2 flex items-center">
+            Task Overview
+            <svg class="h-5 w-5 ml-2 fill-current" clasversion="1.1" viewBox="-49 141 512 512"
+                style="enable-background:new -49 141 512 512;">
+                <path id="XMLID_11_" d="M-24,422h401.645l-72.822,72.822c-9.763,9.763-9.763,25.592,0,35.355c9.763,9.764,25.593,9.762,35.355,0
+            l115.5-115.5C460.366,409.989,463,403.63,463,397s-2.634-12.989-7.322-17.678l-115.5-115.5c-9.763-9.762-25.593-9.763-35.355,0
+            c-9.763,9.763-9.763,25.592,0,35.355l72.822,72.822H-24c-13.808,0-25,11.193-25,25S-37.808,422-24,422z" />
+            </svg>
+        </button>
+    </div>
+    {% endif %}
+
+
+    <script>
+        const urlParameter = new URLSearchParams(window.location.search);
+        const study_id = urlParameter.get("STUDY_ID");
+        const session_id = urlParameter.get("SESSION_ID");
+        const prolific_pid = urlParameter.get("PROLIFIC_PID");
+        const language = urlParameter.get("language");
+
+        const submitEndpoint = "/annotate/submit"
+        const paragraph_id = "{{paragraph_id}}";
+        const paragraph_text = {{ paragraph_text| tojson }};
+        const taskNumber = {{ taskNumber }};
+
+        var data = { "text": paragraph_text };
+
+        var config = `
+            <View classname="p-4">
+                <View classname="px-6">
+                    <Text name="text" value="$text" granularity="word"/>
+                </View>
+                <View classname="mt-12 bg-lime-200 bg-opacity-25 p-6">
+                    <Header value="Answerable Questions" style="margin-top:0" />
+                    <Header size="5" value="{{ answer_requirements_text }}" />
+                    ` + generateQuestion(1, "#008000") + generateQuestion(2, "#008080") + generateQuestion(3, "#000080") + `
+                </View>
+                <View classname="bg-rose-200 bg-opacity-25 p-6">
+                    <Header value="Unanswerable Questions" style="margin-top:0" />
+                    ` + generateQuestion(4, "#ff0000") + generateQuestion(5, "#ff0040") + `
+                </View>
+                <Choices name="quality" toName="text" choice="single" classname="text-xl">
+                    <Choice value="If the text of the paragraph starts or ends within a sentence, has formatting errors or something else is wrong, please click this button. Nevertheless, try to do the work as if the paragraph was not flawed! "  hotkey=" "/>
+                </Choices>
+            </View>
+        `;
+
+        function generateQuestion(questionNumber, label_color) {
+            return `
+                <View style="display: flex;">
+                    <View>
+                        <Header value="Question ` + questionNumber + `:" size="5"/>
+                    </View>
+                    <View style="flex-grow: 1; margin-left: 1em">
+                        <TextArea name="question-` + questionNumber + `" toName="text" showSubmitButton="false" maxSubmissions="1" editable="true" required="true" placeholder="Use your own words. You're encouraged to provide hard questions." requiredMessage="Missing input for Question ` + questionNumber + `"/>
+                    </View>
+                </View>
+                <View style="margin-top: -1.5em; margin-bottom: 1.5em;">
+                    <Labels name="answer-` + questionNumber + `" toName="text" maxUsages="1">
+                        <Label value="Answer ` + questionNumber + `" background="` + label_color + `"/>
+                    </Labels>
+                </View>
+            `;
+        }
+
+        // For documentation see: https://labelstud.io/guide/frontend_reference.html
+        var labelStudio = new LabelStudio('label-studio', {
+            config: config,
+
+            interfaces: [
+                "update",       // Show a button to update the current task after submitting.
+                "submit",       // Show a button to submit or update the current annotation.
+                "controls",     // Enable panel with controls (submit, update, skip).
+                "topbar",       // A labeling interface that lists the top-level items in the Label Studio UI.
+                "side-column",  // Show a column on the right side of the Label Studio UI.
+                "edit-history", // Show edit history.
+            ],
+
+            user: {
+                id: 1,
+                firstName: prolific_pid,
+                lastName: prolific_pid,
+            },
+
+            task: {
+                annotations: [],
+                predictions: [],
+                id: taskNumber,
+                "data": data,
+            },
+        });
+
+        labelStudio.on('labelStudioLoad', (LS) => {
+            var c = LS.annotationStore.addAnnotation({
+                userGenerate: true
+            });
+            LS.annotationStore.selectAnnotation(c.id);
+        });
+
+        labelStudio.on('submitAnnotation', (LS, annotation) => {
+            submit(annotation)
+        });
+
+        labelStudio.on('updateAnnotation', (LS, annotation) => {
+            submit(annotation)
+        });
+
+        function submit(annotation) {
+            // Send PUT request to server
+            fetch(submitEndpoint, {
+                "method": "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                "body": JSON.stringify({
+                    "annotation": annotation.serializeAnnotation(),
+                    "prolific_pid": prolific_pid,
+                    "paragraph_id": paragraph_id
+                }),
+            }).then(response => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong, please try submitting again.\nInvalid status code: ' + response.status);
+                }
+            }).then(data => {
+                if (data["success"]) {
+                    let header = document.getElementById('header');
+                    header.classList.remove("bg-gray-50");
+                    header.classList.add("bg-lime-200", "bg-opacity-25");
+                    window.alert("You successfully completed the task! Please click on the \"Task Overview\" button below (scroll down if you can't see it).")
+                    window.onbeforeunload = function () { };
+                    let nextPageButton = document.getElementById('nextPageButton');
+                    nextPageButton.classList.remove("border-gray-300", "bg-gray-100");
+                    nextPageButton.classList.add("border-orange-400", "bg-orange-100", "hover:bg-orange-200");
+                    nextPageButton.disabled = false;
+                } else {
+                    window.alert(data["message"])
+                }
+            }).catch(error => window.alert(error));
+        }
+
+        function nextPage() {
+            window.onbeforeunload = function () { };
+            window.open(".?" + urlParam("PROLIFIC_PID", prolific_pid) + urlParam("STUDY_ID", study_id) + urlParam("SESSION_ID", session_id) + urlParam("language", language), "_self")
+        }
+
+        function urlParam(identifier, value) {
+            if (value !== null) {
+                return identifier + "=" + value + "&";
+            } else {
+                return "";
+            }
+        }
+
+    </script>
+</body>

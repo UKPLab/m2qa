@@ -1,0 +1,57 @@
+server {
+    server_name mmqa.ukp.informatik.tu-darmstadt.de;
+    
+    location / {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+        auth_basic "You see the username and password in the Prolific study description";
+        auth_basic_user_file /etc/nginx/.htpasswd;
+        proxy_pass http://unix:/home/englaender/m2qa/Website/mmqa.sock;
+    }
+
+    location /quality.html {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+        auth_basic "Quality control is only for admins";
+        auth_basic_user_file /etc/nginx/admins.htpasswd;
+        proxy_pass http://unix:/home/englaender/m2qa/Website/mmqa.sock;
+    }
+
+    location /quality/ {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+        auth_basic "Quality control is only for admins";
+        auth_basic_user_file /etc/nginx/admins.htpasswd;
+        proxy_pass http://unix:/home/englaender/m2qa/Website/mmqa.sock;
+    }
+
+    location = /robots.txt {
+        add_header  Content-Type  text/plain;
+        return 200 "User-agent: *\nDisallow: /\n";
+    }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/mmqa.ukp.informatik.tu-darmstadt.de/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/mmqa.ukp.informatik.tu-darmstadt.de/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = mmqa.ukp.informatik.tu-darmstadt.de) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name mmqa.ukp.informatik.tu-darmstadt.de;
+    return 404; # managed by Certbot
+
+
+}

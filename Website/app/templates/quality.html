@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>M2QA </title>
+    <link rel="stylesheet" href="{{url_for('static',filename='dist/css/style.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='dist/css/main.css')}}">
+</head>
+
+<body class="bg-white" onbeforeunload="return 'you sure you want to leave? Any progress will be lost'">
+    <script src="{{url_for('static',filename='dist/js/bundle.js')}}"></script>
+    <div class="border-b-2 border-gray-100 py-6 text-center bg-gray-50 text-gray-800" id="header">
+        <h1 class="text-5xl font-bold m-0">Quality Control</h1>
+    </div>
+    <div class="bg-white pb-10">
+        <P class="md:max-w-3xl mx-auto text-green-700 text-4xl font-bold text-center pt-8" id="failed-message"
+            style="display: none;">
+        </P>
+    </div>
+    <div id="all-things-for-quality-check" class="bg-white pb-10">
+        <div class="flex justify-end md:max-w-6xl mx-auto mt-8">
+            <p class="text-gray-600 p-2 border rounded-lg w-full mr-2 m-0">
+                Annotator: <span class="font-semibold" id="annotator_id"></span>
+            </p>
+            <p class="text-gray-600 p-2 border rounded-lg w-full m-0">
+                Number of annotation sessions of this annotator: <span class="font-semibold"
+                    id="number_of_annotation_sessions"></span>
+            </p>
+            <p class="text-gray-600 p-2 border rounded-lg w-full ml-2 m-0">
+                Annotators left: <span class="font-semibold" id="number_of_annotators_left"></span>
+            </p>
+        </div>
+        <div id="text-question-buttons"
+            class="md:max-w-6xl mx-auto rounded-xl border-2 border-slate-100 border-solid my-8 p-8 break-normal text-gray-800 bg-white">
+            <div id="original_language">
+                <div id="text"></div>
+                <div class="mt-6">
+                    <p class="m-0">
+                        Question: <span id="question" class="font-semibold"></span>
+                    </p>
+                    <div id="answerable"></div>
+                </div>
+            </div>
+            <div id="translated" style="display: none;">
+                <hr style="width:100%; margin: 1.5rem 0 1.5rem 0">
+                <div id="text_translated"></div>
+                <div class="mt-6">
+                    <p class="m-0">
+                        Question: <span id="question_translated" class="font-semibold"></span>
+                    </p>
+                    <p class="m-0">
+                        Answer: <span id="answer_translated" class="font-semibold"></span>
+                    </p>
+                    <div id="answerable_translated"></div>
+                </div>
+            </div>
+
+            <div class="flex justify-end mt-12">
+                <button type="submit" onclick="fail()" class="bg-gray-100 hover:bg-rose-300 text-gray-600 font-semibold p-2 border hover:border-transparent
+                    rounded-lg w-full mr-2">
+                    Not Ok
+                </button>
+                <button type="submit" onclick="pass()" class="bg-gray-100 hover:bg-green-300 text-gray-600 font-semibold p-2 border hover:border-transparent
+                    rounded-lg w-full ml-2">
+                    Ok
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var annotated_data = [];
+        var annotator_id = 0;
+        var list_counter = 0;
+        var number_of_bad_answers = 0;
+        const qualityCheckEndpoint = "/quality/checked_annotator";
+        const nextAnnotatorEndpoint = "/quality/get_next_annotator";
+
+
+        function pass() {
+            if (list_counter < annotated_data.length) {
+                load_next_text();
+            } else {
+                send_quality_check_request(true);
+                document.getElementById("text-question-buttons").classList.remove("bg-white");
+                document.getElementById("text-question-buttons").classList.add("bg-green-300");
+                document.getElementById("text").innerHTML = "Annotator passed quality check";
+                document.getElementById("question").innerHTML = "";
+                document.getElementById("answerable").innerHTML = "";
+                document.getElementById("translated").style.display = "none";
+
+                sleep(1500).then(() => {
+                    document.getElementById("text-question-buttons").classList.remove("bg-green-300");
+                    document.getElementById("text-question-buttons").classList.add("bg-white");
+                    load_next_annotator();
+                });
+            }
+        }
+
+
+        function fail() {
+            if (number_of_bad_answers < 1) {
+                number_of_bad_answers += 1;
+                pass();
+            } else {
+                send_quality_check_request(false)
+                document.getElementById("text-question-buttons").classList.remove("bg-white");
+                document.getElementById("text-question-buttons").classList.add("bg-rose-300");
+                document.getElementById("text").innerHTML = "Annotator did not pass the quality check";
+                document.getElementById("question").innerHTML = "";
+                document.getElementById("answerable").innerHTML = "";
+
+                sleep(1500).then(() => {
+                    document.getElementById("text-question-buttons").classList.remove("bg-rose-300");
+                    document.getElementById("text-question-buttons").classList.add("bg-white");
+                    load_next_annotator()
+                });
+            }
+        }
+
+        function sleep(milliseconds) {
+            return new Promise(r => setTimeout(r, milliseconds));
+        }
+
+        function send_quality_check_request(good_quality) {
+            fetch(qualityCheckEndpoint, {
+                "method": "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                "body": JSON.stringify({
+                    "annotator_id": annotator_id,
+                    "good_quality": good_quality,
+                }),
+            }).then(response => {
+                if (response.status === 200) {
+                    return;
+                } else {
+                    throw new Error('Something went wrong, please try submitting again.\nInvalid status code: ' + response.status);
+                }
+            }).catch(error => window.alert(error));
+        }
+
+        function load_next_text() {
+            var current_data = annotated_data[list_counter]
+            document.getElementById("text").innerHTML = current_data.text.substr(0, current_data.answer_start) + "<span class=\"bg-neon-yellow px-1 py-0.5\">" + current_data.text.substr(current_data.answer_start, current_data.answer_end - current_data.answer_start) + "</span>" + current_data.text.substr(current_data.answer_end);
+            document.getElementById("question").innerHTML = current_data.question;
+
+            // If current_data has the translated entry
+            if (current_data.hasOwnProperty("translated")) {
+                document.getElementById("translated").style.display = "";
+                document.getElementById("text_translated").innerHTML = current_data.translated.text;
+                document.getElementById("question_translated").innerHTML = current_data.translated.question;
+                document.getElementById("answer_translated").innerHTML = current_data.translated.answer;
+            }
+
+            mark_question_as_answerable(current_data.answerable);
+            list_counter += 1;
+        }
+
+        function load_next_annotator() {
+            number_of_bad_answers = 0;
+            fetch(nextAnnotatorEndpoint, {
+                "method": "GET",
+            }).then(response => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong, please try submitting again.\nInvalid status code: ' + response.status);
+                }
+            }).then(response => {
+                if (response.success === false) {
+                    document.getElementById("all-things-for-quality-check").style.display = "none";
+                    document.getElementById("failed-message").style.display = "";
+                    document.getElementById("failed-message").innerHTML = response.message;
+                } else {
+                    annotated_data = response.data.annotated_data;
+                    annotator_id = response.data.annotator_id;
+                    document.getElementById("annotator_id").innerHTML = annotator_id;
+                    document.getElementById("number_of_annotation_sessions").innerHTML = response.data.number_of_annotation_sessions;
+                    document.getElementById("number_of_annotators_left").innerHTML = response.data.number_of_annotators_left;
+                    list_counter = 0;
+                    load_next_text();
+                }
+            }).catch(error => window.alert(error));
+        }
+
+        function mark_question_as_answerable(answerable) {
+            var element = document.getElementById("answerable")
+            if (answerable) {
+                element.innerHTML = "Answerable"
+                element.style.color = "green"
+            } else {
+                element.innerHTML = "Not Answerable"
+                element.style.color = "red"
+            }
+            var element = document.getElementById("answerable_translated")
+            if (answerable) {
+                element.innerHTML = "Answerable"
+                element.style.color = "green"
+            } else {
+                element.innerHTML = "Not Answerable"
+                element.style.color = "red"
+            }
+        }
+
+        load_next_annotator();
+    </script>
+</body>
+
+</html>
