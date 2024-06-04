@@ -1,14 +1,9 @@
 # M2QA Benchmark Dataset
-**⚠️⚠️⚠️ This is the only yet unfinished section. TODO: write this section & encrypt the data.**
-- Why did we encrypt the data?
-- How to load it?
-  - Before using it execute the decrypt script
-  - Example with Hugging Face
-- Additional Training Examples [training data](m2qa_dataset/Additional_Training_data) come from the same datasets but the train split. Also uploaded on Hugging Face. And since its training data it is unencrypted.
+The M2QA benchmark dataset consists of 13,500 SQuAD 2.0-style question-answer instances, divided evenly across nine language-domain combination pairs (1500 instances each). 40% of the data are unanswerable questions, 60% are answerable. We provide 7500 additional training examples.
 
+Following [Jacovi et al. (2023)](https://aclanthology.org/2023.emnlp-main.308/), we encrypt the validation data to prevent leakage of the dataset into LLM training datasets. Additional training examples [training data](Additional_Training_data) come from the same datasets (train split instead of test split). Also uploaded on Hugging Face. And since it's training data, it is unencrypted.
 
-
-The training data:
+To unencrypt the data, execute:
 
 ```bash
 unzip -P m2qa german.zip
@@ -16,7 +11,28 @@ unzip -P m2qa chinese.zip
 unzip -P m2qa turkish.zip
 ```
 
+You can then easily load it, e.g. like this:
+
+```python
+from datasets import load_dataset
+
+LANGUAGES = ["german", "chinese", "turkish"]
+DOMAINS = ["news", "creative_writing", "product_reviews"]
+
+def load_m2qa_dataset(args: argparse.Namespace):
+    m2qa_dataset = {}
+    for language in LANGUAGES:
+        m2qa_dataset[language] = load_dataset(
+            "json",
+            data_files={domain: f"m2qa_dataset/{language}/{domain}.json" for domain in DOMAINS},
+        )
+
+    return m2qa_dataset
+```
+
 ### Via Hugging Face
+The dataset is also available via Hugging Face datasets: [https://huggingface.co/datasets/UKPLab/m2qa](https://huggingface.co/datasets/UKPLab/m2qa)
+Follow the instructions there to see how easily you can load the data & evaluate models with it.
 
 ## Licences
 The contextes stem from sources with open licenses:
