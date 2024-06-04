@@ -11,7 +11,7 @@ and provides access to the benchmark dataset, our custom-built annotation platfo
 ## Data
 The M2QA benchmark dataset consists of 13,500 SQuAD 2.0-style question-answer instances, divided evenly across nine language-domain combination pairs (1500 instances each). 40% of the data are unanswerable questions, 60% are answerable.
 
-The data is provided in [m2qa_dataset/](m2qa_dataset) and uploaded on Hugging Face: *TODO insert LINK*
+The data is provided in [m2qa_dataset/](m2qa_dataset) and uploaded on Hugging Face: [https://huggingface.co/datasets/UKPLab/m2qa](https://huggingface.co/datasets/UKPLab/m2qa)
 
 Following [Jacovi et al. (2023)](https://aclanthology.org/2023.emnlp-main.308/), we encrypt the data to prevent leakage of the dataset into LLM training datasets. Have a look at [m2qa_dataset/README.md](m2qa_dataset/README.md) to see how easily you can use the dataset.
 
@@ -52,6 +52,7 @@ If you use M2QA in your work, please consider citing our paper:
         Kuznetsov, Ilia and
         Gurevych, Iryna},
     journal={arXiv preprint},
+    url={TODO_ONCE_ON_ARXIV}
     year="2024"
 }
 ```
