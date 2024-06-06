@@ -66,11 +66,18 @@ Following [Jacovi et al. (2023)](https://aclanthology.org/2023.emnlp-main.308/),
 The code of this repository (i.e. everything except the M2QA dataset) is distributed with the [Apache License 2.0](LICENSE).
 
 ## Contact
-Contact: https://www.ukp.tu-darmstadt.de/
 
-UKP Lab is part of the TU Darmstadt: https://www.tu-darmstadt.de/
+Contact persons:
+- Leon Engländer: [📧 Email](mailto:lenglaender@t-online.de) | [🐦 Twitter](https://twitter.com/LeonEnglaender) | [💻 GitHub](https://github.com/lenglaender)
+- Hannah Sterz: [📧 Email](mailto:hsterz16@gmail.com) | [🐦 Twitter](https://twitter.com/h_sterz) | [💻 GitHub](https://github.com/hSterz)
+- Ilia Kuznetsov: [📧 Email](mailto:ilia.kuznetsov@tu-darmstadt.de) | [🐦 Twitter](https://twitter.com/ilokuznetsov) | [💻 GitHub](https://github.com/iokuznetsov)
+
 
 If you have any questions, please do not hesitate to contact us or (preferably) open an issue here on GitHub.
+
+https://www.ukp.tu-darmstadt.de/   
+UKP Lab is part of the TU Darmstadt: https://www.tu-darmstadt.de/
+
 
 ```
 This repository contains experimental software and is published for the sole purpose of giving additional background details on the respective publication.

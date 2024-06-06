@@ -1,4 +1,11 @@
 # Evaluating LLMs on M2QA
+Use the `m2qa_llm_evaluation` conda environment from [environment.yml](environment.yml)
+
+```bash
+conda env create -f environment.yml
+conda activate m2qa_llm_evaluation
+```
+
 We evaluated `gpt-3.5-turbo-0613`, `gpt-3.5-turbo-0301` and `Llama 2-chat (13b)` on the M2QA dataset. For every model, we evaluated zero-shot and few-shot prompts. To reproduce our results:
 1. Create predictions:
     - For OpenAI models: `python3 generate_openai_answers.py --model="<MODEL>" --prompt_name="<PROMPT>" --output_dir=<OUTPUR_DIR>`

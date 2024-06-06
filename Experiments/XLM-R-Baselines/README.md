@@ -1,4 +1,6 @@
-Training the XLM-R-Base & XLM-R-Domain models:
+First, activate the conda environment: `conda activate m2qa_experiments`  
+Then train the XLM-R-Base & XLM-R-Domain models by starting the bash scripts:
+
 - **XLM-R Base**:
     - Execute [xlm-r-fine-tune/train_full_xlm_r_on_squad.sh](xlm-r-fine-tune/train_full_xlm_r_on_squad.sh)
 - **XLM-R Domain Adapted**:

@@ -31,10 +31,10 @@ PATHS = {
     # MAD-X+Domain
     "mad-x-domain": {
         "domains": {
-            "wiki": "/home/leon/UKP/M2QA/m2qa/Experiments/Trained_adapters/mad-x-domain/wiki/",
-            "creative_writing": "/home/leon/UKP/M2QA/m2qa/Experiments/Trained_adapters/mad-x-domain/books/",
-            "news": "/home/leon/UKP/M2QA/m2qa/Experiments/Trained_adapters/mad-x-domain/news/",
-            "product_reviews": "/home/leon/UKP/M2QA/m2qa/Experiments/Trained_adapters/mad-x-domain/reviews/",
+            "wiki": "AdapterHub/m2qa-xlm-roberta-base-mad-x-domain-wiki",
+            "creative_writing": "AdapterHub/m2qa-xlm-roberta-base-mad-x-domain-creative-writing",
+            "news": "AdapterHub/m2qa-xlm-roberta-base-mad-x-domain-news",
+            "product_reviews": "AdapterHub/m2qa-xlm-roberta-base-mad-x-domain-product-reviews",
         },
         "languages": {
             # The original MAD-X language adapters
@@ -45,26 +45,26 @@ PATHS = {
         },
         "qa_head": {
             "name": "mad-x+domain qa_head",
-            "path": "/home/leon/UKP/M2QA/m2qa/Experiments/Trained_adapters/mad-x-domain/squad2_qa_head",
+            "path": "AdapterHub/m2qa-xlm-roberta-base-mad-x-domain-qa-head",
         },
     },
     # MAD-X²
     "mad-x-2": {
         "domains": {
-            "wiki": "/home/leon/UKP/M2QA/m2qa/Experiments/Trained_adapters/mad-x-2/domain/wikipedia/",
-            "creative_writing": "/home/leon/UKP/M2QA/m2qa/Experiments/Trained_adapters/mad-x-2/domain/creative_writing/",
-            "news": "/home/leon/UKP/M2QA/m2qa/Experiments/Trained_adapters/mad-x-2/domain/news/",
-            "product_reviews": "/home/leon/UKP/M2QA/m2qa/Experiments/Trained_adapters/mad-x-2/domain/product_reviews/",
+            "wiki": "AdapterHub/m2qa-xlm-roberta-base-mad-x-2-wiki",
+            "creative_writing": "AdapterHub/m2qa-xlm-roberta-base-mad-x-2-creative-writing",
+            "news": "AdapterHub/m2qa-xlm-roberta-base-mad-x-2-news",
+            "product_reviews": "AdapterHub/m2qa-xlm-roberta-base-mad-x-2-product-reviews",
         },
         "languages": {
-            "english": "/home/leon/UKP/M2QA/m2qa/Experiments/Trained_adapters/mad-x-2/language/english",
-            "german": "/home/leon/UKP/M2QA/m2qa/Experiments/Trained_adapters/mad-x-2/language/german",
-            "chinese": "/home/leon/UKP/M2QA/m2qa/Experiments/Trained_adapters/mad-x-2/language/chinese",
-            "turkish": "/home/leon/UKP/M2QA/m2qa/Experiments/Trained_adapters/mad-x-2/language/turkish",
+            "english": "AdapterHub/m2qa-xlm-roberta-base-mad-x-2-english",
+            "german": "AdapterHub/m2qa-xlm-roberta-base-mad-x-2-german",
+            "chinese": "AdapterHub/m2qa-xlm-roberta-base-mad-x-2-chinese",
+            "turkish": "AdapterHub/m2qa-xlm-roberta-base-mad-x-2-turkish",
         },
         "qa_head": {
             "name": "mad-x-2-qa_adapter",
-            "path": "/home/leon/UKP/M2QA/m2qa/Experiments/Trained_adapters/mad-x-2/squad2_qa_head",
+            "path": "AdapterHub/m2qa-xlm-roberta-base-mad-x-2-qa-head",
         },
     },
 }
@@ -441,7 +441,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--evaluate_mad_x_domain", type=bool, default=False, const=True, nargs="?", help="Model: Evaluate MAD-X+Domain adapter setup")  # fmt: skip
     parser.add_argument("--evaluate_mad_x_2", type=bool, default=False, const=True, nargs="?", help="Model: Evaluate MAD-X² adapter setup")  # fmt: skip
 
-    # To evaluate intermediate combinations of MAD-X+Domain, i.e. only head, head + language adapter and head + domain adapter
+    # Not used in the paper: Evaluate intermediate combinations of MAD-X+Domain, i.e. only head, head + language adapter and head + domain adapter
     parser.add_argument("--evaluate_mad_x_domain_intermediate_combinations", type=bool, default=False, const=True, nargs="?", help="(not used in paper) Evaluate intermediate combinations of MAD-X+Domain adapter setup")  # fmt: skip
 
     # Which dataset(s) to evaluate on

@@ -3,7 +3,8 @@ The MAD-X² setup consists of 3 adapters:
 2. MAD-X² domain adapters
 3. QA head adapter
 
-Training the adapters:
+First, activate the conda environment: `conda activate m2qa_experiments`  
+Then train the adapters by starting the bash scripts:
 1. Domain & Language Adapter:
     - Part of the german creative writing is the Corpus of German-Language Fiction ([Fischer et al. 2015](https://ds.ifi.uni-heidelberg.de/files/Team/jannik/publications/fischer-stroetgen_temporal-expressions-in-literary-corpora_dh2015_final_2015-03-01.pdf)), load it from here: https://figshare.com/articles/dataset/Corpus_of_German-Language_Fiction_txt_/4524680 and put it in the directory `Corpora/corpus-of-german-fiction-txt/`
     - Execute the [train_domain_language_adapter.py](train_domain_language_adapter.py) through the [start_training.sh](start_training.sh) bash file
