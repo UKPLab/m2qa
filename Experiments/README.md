@@ -26,7 +26,7 @@ The evaluation for our XLM-R Baselines, the MAD-X+Domain and MAD-X² setup are d
 
 
 ## LLMs
-We evaluated `gpt-3.5-turbo-0613`, `gpt-3.5-turbo-0301` and `Llama 2-chat (13b)` on the M2QA dataset. This is described in detail here: [LLM_evaluation/README.md](LLM_evaluation/README.md)
+We evaluated `gpt-3.5-turbo-0613`, `gpt-3.5-turbo-0301`, `Llama 2-chat (13b)`, `Llama 3-instruct (8b)` and `Aya-23 (8b)` on the M2QA dataset. This is described in detail here: [LLM_evaluation/README.md](LLM_evaluation/README.md)
 
 ## MAD-X² / MAD-X+Domain Adapters Code Example
 ### MAD-X²

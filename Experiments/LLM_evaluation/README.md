@@ -11,7 +11,9 @@ We evaluated `gpt-3.5-turbo-0613`, `gpt-3.5-turbo-0301` and `Llama 2-chat (13b)`
     - For OpenAI models: `python3 generate_openai_answers.py --model="<MODEL>" --prompt_name="<PROMPT>" --output_dir=<OUTPUR_DIR>`
       - Models that we used were: `gpt-3.5-turbo-0613` and `gpt-3.5-turbo-0301`
       - Prompts are listed in [prompts.py](prompts.py)
-    - For Llama: `python3 generate_llama_answers.py --output_dir=Results/llama/` and before this set `PROMPT_FOR_LLAMA = True` in [prompts.py](prompts.py)
+    - For Aya 23: `python3 generate_local_llm_answers.py --model_name="llama2" --output_dir=Results/aya23/` and before this set `PROMPT_FOR_LLAMA = True` in [prompts.py](prompts.py)
+    - For Llama 2: `python3 generate_local_llm_answers.py --model_name="llama3" --output_dir=Results/llama2chat/` and before this set `PROMPT_FOR_LLAMA = True` in [prompts.py](prompts.py)
+    - For Llama 3: `python3 generate_local_llm_answers.py --model_name="aya23"  --output_dir=Results/llama3instruct/` and before this set `PROMPT_FOR_LLAMA = False` in [prompts.py](prompts.py)
 2. Evaluate predictions:
     - `python3 evaluate_llm_answers.py --input_dir=Results/Eval_on_M2QA_Validation_Data/gpt-35-turbo/gpt-35-turbo-0613/zero_shot_english/`
 

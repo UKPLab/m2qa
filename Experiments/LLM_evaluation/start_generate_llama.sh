@@ -16,4 +16,4 @@ TOKEN="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" # This token has been disabled, ex
 
 echo "run python"
 cd /storage/ukp/work/englaender/M2QA/m2qa/Experiments/LLM_evaluation/
-/storage/ukp/work/englaender/miniconda/envs/m2qa_llm_evaluation/bin/python generate_llama_answers.py --output_dir="/storage/ukp/work/englaender/M2QA/m2qa/Experiments/LLM_evaluation/outputs_llama/" --huggingface_token $TOKEN --limit 10
+/storage/ukp/work/englaender/miniconda/envs/m2qa_llm_evaluation/bin/python generate_local_llm_answers.py --model_name="llama3" --output_dir="/storage/ukp/work/englaender/M2QA/m2qa/Experiments/LLM_evaluation/llama2" --huggingface_token $TOKEN --limit 10

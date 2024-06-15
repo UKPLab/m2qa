@@ -56,6 +56,7 @@ def batch_predict_answers_llama(
     model: LlamaForCausalLM,
     tokenizer: LlamaTokenizer,
     prompt_name: str,
+    model_name: str,
 ):
     outputs = []
     for i in tqdm.tqdm(
@@ -135,7 +136,16 @@ def batch_predict_answers_llama(
 
         for id, output in zip(range(i, end_index), decoded_outputs):
             # Output contains the prompt, so we need to remove it
-            predicted_answer = output.split("[/INST]")[-1].strip()
+            if model_name == "llama2":
+                # remove the prompt
+                predicted_answer = output.split("[/INST]")[-1].strip()
+            elif model_name == "llama3":
+                # remove the prompt
+                predicted_answer = output.split("Answer:")[-1]
+                predicted_answer = predicted_answer[len("assistant\n\n") :]
+            elif model_name == "aya23":
+                # remove the prompt
+                predicted_answer = output.split("Answer:")[-1]
 
             if (
                 prompt_name == "zero_shot_german"
@@ -178,8 +188,7 @@ def batch_predict_answers_llama(
 
 
 #########################
-def init_model():
-    model_path = "meta-llama/Llama-2-13b-chat-hf"
+def init_llama_model(model_path):
     tokenizer = AutoTokenizer.from_pretrained(
         model_path,
         use_fast=True,
@@ -201,6 +210,22 @@ def init_model():
     return model.eval(), tokenizer
 
 
+def init_aya_model():
+    model_path = "CohereForAI/aya-23-8B"
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_path,
+        use_fast=True,
+        legacy=False,
+        token=args.huggingface_token,
+    )
+    model = AutoModelForCausalLM.from_pretrained(
+        model_path,
+        device_map="auto",
+        token=args.huggingface_token,
+    )
+    return model.eval(), tokenizer
+
+
 XQUAD_LANGUAGE_MAPPING = {
     "german": "de",
     "english": "en",
@@ -210,7 +235,14 @@ XQUAD_LANGUAGE_MAPPING = {
 
 
 def main(args: argparse.Namespace, mmqa_dataset: dict[str, DatasetDict]):
-    model, tokenizer = init_model()
+    if args.model == "llama2":
+        model, tokenizer = init_llama_model("meta-llama/Llama-2-13b-chat-hf")
+    elif args.model == "llama3":
+        model, tokenizer = init_llama_model("meta-llama/Meta-Llama-3-8B-Instruct")
+    elif args.model == "aya23":
+        model, tokenizer = init_aya_model()
+    else:
+        raise ValueError("Model must be in ['llama2', 'llama3', 'aya23']")
 
     for prompt_name in [
         "zero_shot_english",
@@ -299,9 +331,15 @@ if __name__ == "__main__":
     parser.add_argument("--output_dir", required=True, type=str)
     parser.add_argument("--huggingface_token", required=True, type=str)
 
+    # Model must be in ["llama2", "llama3", "aya23"]
+    parser.add_argument("--model", required=True, type=str)
+
     # Evaluate the model only on the first N examples of each dataset, if not None
     parser.add_argument("--limit", type=int, default=None)  # fmt: skip
     args = parser.parse_args()
+
+    if args.model not in ["llama2", "llama3", "aya23"]:
+        raise ValueError("Model must be in ['llama2', 'llama3', 'aya23']")
 
     mmqa_dataset = load_mmqa_dataset(args)
 
