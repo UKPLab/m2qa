@@ -1,7 +1,7 @@
 # M2QA: A Multi-domain Multilingual Question Answering Benchmark Dataset
 M2QA (Multi-domain Multilingual Question Answering) is an extractive question answering benchmark for evaluating joint language and domain transfer. M2QA includes 13,500 SQuAD 2.0-style question-answer instances in German, Turkish, and Chinese for the domains of product reviews, news, and creative writing.
 
-This repository accompanies our paper "[M2QA: Multi-domain Multilingual Question Answering](TODO_Add_Link_Once_On_Arxiv)"
+This repository accompanies our paper "[M2QA: Multi-domain Multilingual Question Answering](https://arxiv.org/abs/2407.01091)"
 and provides access to the benchmark dataset, our custom-built annotation platform, and the code to reproduce all our experiments.
 
 <p align="center">
@@ -26,7 +26,7 @@ Our main contributions include:
 3. **SQuAD 2.0 metric not applicable in every language:** We find that the widely used SQuAD 2.0 evaluation metric is insufficient for evaluating multilingual extractive QA due to its reliance upon whitespace tokenization and propose a version of the metric that mitigates the issue. For more information, have a look at Section 5.1 of our paper or [Experiments/M2QA_Metric/README.md](Experiments/M2QA_Metric/README.md).
 4. **More research has to be done on joint language and domain transfer!** Our results show that modern LLMs perform considerably worse on their target than on their source domain-language pair, highlighting the need for further research into methods that transfer both linguistic *and* domain-specific information.
 
-We provide the code to reproduce all our experiments in the [Experiments/](Experiments) directory. Have a look at  [Experiments/README.md](Experiments/README.md) for a detailed explanation of our experiments and how to reproduce them. There you find everything, including the code to reproduce these main results:
+We provide the code to reproduce all our experiments in the [Experiments/](Experiments) directory. Have a look at  [Experiments/README.md](Experiments/README.md) for a detailed explanation of our experiments and how to reproduce them. There, you find everything, including the code to reproduce these main results:
 
 ![main evaluation results table](imgs/main_evaluation_results.png)
 
@@ -52,7 +52,8 @@ If you use M2QA in your work, please consider citing our paper:
         Kuznetsov, Ilia and
         Gurevych, Iryna},
     journal={arXiv preprint},
-    url={TODO_ONCE_ON_ARXIV}
+    url="https://arxiv.org/abs/2407.01091",
+    month = jul,
     year="2024"
 }
 ```
