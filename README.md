@@ -43,18 +43,21 @@ We have developed a new annotation platform to fulfil all of our requirements. T
 ## Citation
 If you use M2QA in your work, please consider citing our paper:
 ```
-@article{englaender-etal-2024-m2qa,
-    title="M2QA: Multi-domain Multilingual Question Answering",
-    author={Engl{\"a}nder, Leon and
-        Sterz, Hannah and
-        Poth, Clifton and
-        Pfeiffer, Jonas and
-        Kuznetsov, Ilia and
-        Gurevych, Iryna},
-    journal={arXiv preprint},
-    url="https://arxiv.org/abs/2407.01091",
-    month = jul,
-    year="2024"
+@inproceedings{englander-etal-2024-m2qa,
+    title = "M2QA: Multi-domain Multilingual Question Answering",
+    author = {Engl{\"a}nder, Leon  and
+      Sterz, Hannah  and
+      Poth, Clifton A  and
+      Pfeiffer, Jonas  and
+      Kuznetsov, Ilia  and
+      Gurevych, Iryna},
+    booktitle = "Findings of the Association for Computational Linguistics: EMNLP 2024",
+    month = nov,
+    year = "2024",
+    address = "Miami, Florida, USA",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.findings-emnlp.365",
+    pages = "6283--6305",
 }
 ```
 
