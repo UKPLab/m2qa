@@ -1,5 +1,5 @@
 # M2QA: A Multi-domain Multilingual Question Answering Benchmark Dataset
-> 🎉 M2QA has been accepted to EMNLP Finding 2023 🎉
+> 🎉 M2QA has been accepted to EMNLP Finding 2024 🎉
 
 M2QA (Multi-domain Multilingual Question Answering) is an extractive question answering benchmark for evaluating joint language and domain transfer. M2QA includes 13,500 SQuAD 2.0-style question-answer instances in German, Turkish, and Chinese for the domains of product reviews, news, and creative writing.
 
