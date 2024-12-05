@@ -309,11 +309,27 @@ def find_all_best_thresh(main_eval, preds, exact_raw, f1_raw, na_probs, qid_to_h
 
 
 _CITATION = """
-@article{englaender-etal-2024-m2qa,
-  title={M2QA: Multi-domain Multilingual Question Answering},
-  author={Engl{\"a}nder, Leon and Sterz, Hannah and Poth, Clifton and Pfeiffer, Jonas and Kuznetsov, Ilia and Gurevych, Iryna},
-  journal={arXiv preprint},
-  year="2024"
+@inproceedings{englander-etal-2024-m2qa,
+    title = "{M}2{QA}: Multi-domain Multilingual Question Answering",
+    author = {Engl{\"a}nder, Leon  and
+      Sterz, Hannah  and
+      Poth, Clifton A  and
+      Pfeiffer, Jonas  and
+      Kuznetsov, Ilia  and
+      Gurevych, Iryna},
+    editor = "Al-Onaizan, Yaser  and
+      Bansal, Mohit  and
+      Chen, Yun-Nung",
+    booktitle = "Findings of the Association for Computational Linguistics: EMNLP 2024",
+    month = nov,
+    year = "2024",
+    address = "Miami, Florida, USA",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.findings-emnlp.365",
+    doi = "10.18653/v1/2024.findings-emnlp.365",
+    pages = "6283--6305",
+    abstract = "Generalization and robustness to input variation are core desiderata of machine learning research. Language varies along several axes, most importantly, language instance (e.g. French) and domain (e.g. news). While adapting NLP models to new languages within a single domain, or to new domains within a single language, is widely studied, research in joint adaptation is hampered by the lack of evaluation datasets. This prevents the transfer of NLP systems from well-resourced languages and domains to non-dominant language-domain combinations. To address this gap, we introduce M2QA, a multi-domain multilingual question answering benchmark.M2QA includes 13,500 SQuAD 2.0-style question-answer instances in German, Turkish, and Chinese for the domains of product reviews, news, and creative writing. We use M2QA to explore cross-lingual cross-domain performance of fine-tuned models and state-of-the-art LLMs and investigate modular approaches to domain and language adaptation.We witness **1)** considerable performance {\_}variations{\_} across domain-language combinations within model classes and **2)** considerable performance {\_}drops{\_} between source and target language-domain combinations across all model sizes. We demonstrate that M2QA is far from solved, and new methods to effectively transfer both linguistic and domain-specific information are necessary.",
+}
 }
 """
 

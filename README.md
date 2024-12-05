@@ -1,8 +1,9 @@
 # M2QA: A Multi-domain Multilingual Question Answering Benchmark Dataset
+> 🎉 M2QA has been accepted to EMNLP Finding 2024 🎉
+
 M2QA (Multi-domain Multilingual Question Answering) is an extractive question answering benchmark for evaluating joint language and domain transfer. M2QA includes 13,500 SQuAD 2.0-style question-answer instances in German, Turkish, and Chinese for the domains of product reviews, news, and creative writing.
 
-This repository accompanies our paper "[M2QA: Multi-domain Multilingual Question Answering](https://arxiv.org/abs/2407.01091)"
-and provides access to the benchmark dataset, our custom-built annotation platform, and the code to reproduce all our experiments.
+This repository accompanies our paper "[M2QA: Multi-domain Multilingual Question Answering](https://aclanthology.org/2024.findings-emnlp.365/)" and provides access to the benchmark dataset, our custom-built annotation platform, and the code to reproduce all our experiments.
 
 <p align="center">
 <img src="imgs/m2qa-eyecatcher.png" width="50%" />
